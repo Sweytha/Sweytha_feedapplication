@@ -1,81 +1,99 @@
 package com.bptn.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.persistence.*;
 
 @Entity
-@Table(name="\"UserID\"")
-public class UserID {
-	
-	@Column(name="\"name\"")
-	private String name;
-	
-	@Column(name="\"emailID\"")
-	private String emailID;
-	@Column(name = "\"phoneNumber\"")
-	private String phoneNumber;
-	@Column(name = "\"userPassword\"")
-	private String userPassword;
-	@Id
-    @Column(name = "\"username\"")
-	private String username;
-	
-	public UserID() {
-		super();
-	}
+@Table(name = "\"UserID\"")
+@NamedQuery(name="UserID.findAll", query="SELECT u FROM UserID u")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+public class UserID implements Serializable {
 
-	public UserID(String name, String emailID, String phoneNumber, String userPassword, String username) {
-		super();
-		this.name = name;
-		this.emailID = emailID;
-		this.phoneNumber = phoneNumber;
-		this.userPassword = userPassword;
-		this.username = username;
-	}
+	private static final long serialVersionUID = 1L;
 
-	public String getName() {
-		return name;
-	}
+    @Id
+    @Column(name = "username", nullable = false)
+    private String username;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "name", nullable = false)
+    private String name;
 
-	public String getEmailID() {
-		return emailID;
-	}
+    @Column(name = "\"emailID\"", nullable = false)
+    private String emailID;
 
-	public void setEmailID(String emailID) {
-		this.emailID = emailID;
-	}
+    @Column(name = "\"phoneNumber\"", nullable = false)
+    private String phoneNumber;
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    @OneToMany(mappedBy = "usernameKey", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Role> roles = new LinkedHashSet<>();
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userID")
+    @JsonManagedReference
+    private Profile profile;
 
-	public String getUserPassword() {
-		return userPassword;
-	}
+    @OneToMany(mappedBy = "usernameKey", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Address> addresses = new LinkedHashSet<>();
 
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	
-	
+    public Profile getProfile() {
+        return profile;
+    }
 
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmailID() {
+        return emailID;
+    }
+
+    public void setEmailID(String emailID) {
+        this.emailID = emailID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String id) {
+        this.username = id;
+    }
 }
